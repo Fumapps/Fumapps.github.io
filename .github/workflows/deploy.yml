@@ -31,7 +31,7 @@ jobs:
           links=""
           while IFS= read -r code || [[ -n "$code" ]]; do
           if [[ -n "$code" ]]; then
-          links+="<p><a href=\"https://play.google.com/redeem?code=${code}\">${code}</a></p></br>"$'\n'
+          links+="<p><a href=\"https://play.google.com/redeem?code=${code}\">${code}</a></p>"$'\n'
           fi
           done <<< "$PROMOCODES_ANDROID"
           
