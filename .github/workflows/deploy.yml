@@ -1,0 +1,31 @@
+name: Deploy GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Replace PROMOCODES placeholder
+        env:
+          PROMOCODES_ANDROID: ${{ secrets.PROMOCODES_ANDROID }}
+        run: |
+          PROMOCODES=$(echo "$PROMOCODES_ANDROID" | tr ' ' '\n')
+          LINKS=""
+          for CODE in $PROMOCODES; do
+            LINKS+="<p><a href=\"https://play.google.com/redeem?code=${CODE}\">${CODE}</a></p>\n"
+          done
+          sed -i "s|-PROMOCODES-|${LINKS}|g" promocodes.html
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./public
