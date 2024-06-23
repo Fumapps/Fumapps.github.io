@@ -30,7 +30,7 @@ jobs:
           done <<< "$PROMOCODES_ANDROID"
       
           # Replace placeholder in file using awk instead of sed
-          awk -v r="$links" '{gsub(/-PROMOCODES-/,r)}1' promocodes.html > temp.html && mv temp.html promocodes.h
+          awk -v r="$links" '{gsub(/-PROMOCODES-/,r)}1' promocodes.html > temp.html && mv temp.html promocodes.html
           # Print the result for debugging (optional)
           echo "Resulting HTML:"
           cat promocodes.html
