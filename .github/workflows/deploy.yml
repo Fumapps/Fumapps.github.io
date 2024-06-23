@@ -19,14 +19,22 @@ jobs:
 
       - name: Replace PROMOCODES placeholder
         env:
-          PROMOCODES_ANDROID: ${{ secrets.PROMOCODES_ANDROID }}
+          PROMOCODES_ANDROID: ${{ vars.PROMOCODES_ANDROID }}
         run: |
-          PROMOCODES=$(echo "$PROMOCODES_ANDROID" | tr ' ' '\n')
-          LINKS=""
-          for CODE in $PROMOCODES; do
-            LINKS+="<p><a href=\"https://play.google.com/redeem?code=${CODE}\">${CODE}</a></p>\n"
+          # Convert promocodes to array
+          IFS=$'\n' read -d '' -r -a promocodes <<< "$PROMOCODES_ANDROID"
+      
+          # Generate links
+          links=""
+          for code in "${promocodes[@]}"; do
+          links+="<p><a href=\"https://play.google.com/redeem?code=${code}\">${code}</a></p>"$'\n'
           done
-          sed -i "s|-PROMOCODES-|${LINKS}|g" promocodes.html
+      
+          # Escape special characters for sed
+          escaped_links=$(printf '%s\n' "$links" | sed -e 's/[\/&]/\\&/g')
+      
+          # Replace placeholder in file
+          sed -i "s|-PROMOCODES-|${escaped_links}|g" promocodes.html
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v4
