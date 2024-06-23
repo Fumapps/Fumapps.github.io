@@ -1,28 +1,32 @@
-name: Deploy GitHub Pages
-
 on:
   push:
-    branches:
-      - main
+    branches: ["main"]
   workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
   deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
-    concurrency:
-      group: ${{ github.workflow }}-${{ github.ref }}
-
     steps:
-      - uses: actions/checkout@v4
-
+      - name: Checkout
+        uses: actions/checkout@v4
       - name: Replace PROMOCODES placeholder
         env:
           PROMOCODES_ANDROID: ${{ vars.PROMOCODES_ANDROID }}
         run: |
-          mkdir -p public
-          
           # Generate links
           links=""
           while IFS= read -r code || [[ -n "$code" ]]; do
@@ -30,16 +34,20 @@ jobs:
           links+="<p><a href=\"https://play.google.com/redeem?code=${code}\">${code}</a></p></br>"$'\n'
           fi
           done <<< "$PROMOCODES_ANDROID"
-      
+          
           # Replace placeholder in file using awk
-          awk -v r="$links" '{gsub(/-PROMOCODES-/,r)}1' promocodes.html > public/promocodes.html
+          awk -v r="$links" '{gsub(/-PROMOCODES-/,r)}1' promocodes.html > temp.html && mv temp.html promocodes.html
           # Print the result for debugging (optional)
-          echo "Resulting public/promocodes.html:"
-          cat public/promocodes.html
+          echo "Resulting promocodes.html:"
+          cat promocodes.html
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v4
-        if: github.ref == 'refs/heads/main'
+      - name: Setup Pages
+        uses: actions/configure-pages@v5
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./public
+          # Upload entire repository
+          path: '.'
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
