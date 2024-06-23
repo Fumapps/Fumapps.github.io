@@ -1,0 +1,88 @@
+.navbar {
+    margin-bottom: 0;
+    z-index: 9999;
+    border: 0;
+    font-size: 12px !important;
+    line-height: 1.42857143 !important;
+    letter-spacing: 4px;
+    border-radius: 0;
+}
+
+h2 {
+    margin-bottom: 30px;
+}
+
+.navbar-nav li a:hover {
+    color: #1abc9c !important;
+}
+
+@keyframes fumapps-colors-animation {
+    from {background-color: #51a787;}
+    to {background-color: #6cdab0;}
+}
+
+.bg-1 {
+    background-color: #51a787;
+    color: #ffffff;
+    animation-name: fumapps-colors-animation;
+    animation-duration: 2s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+.bg-2 {
+    background-color: #ffffff;
+    color: #555555;
+}
+
+.bg-3 {
+    background-color: #6cdab0;
+    color: white;
+}
+
+.bg-4 {
+    background-color: #2f2f2f;
+    color: #ffffff;
+}
+
+.bg-5 {
+    background-color: #4f4f4f;
+    color: #eeeeee;
+}
+
+.container-fluid {
+    padding-top: 70px;
+    padding-bottom: 70px;
+}
+
+#home {
+    padding-top: 120px;
+}
+
+.carousel-inner img {
+    width: 100%;
+    margin: auto;
+}
+
+.carousel-caption h3 {
+    color: #fff !important;
+}
+
+#aufachse-carousel {
+    margin-top: 20px;
+}
+
+@media (max-width: 600px) {
+    .carousel-caption {
+        display: none; /* Hide the carousel text when the screen is less than 600 pixels wide */
+    }
+}
+
+.thumbnail {
+    color: black;
+}
+
+footer a, .bg-5 a {
+    color: #6cdab0;
+}
