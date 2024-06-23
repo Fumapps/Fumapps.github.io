@@ -29,12 +29,8 @@ jobs:
           fi
           done <<< "$PROMOCODES_ANDROID"
       
-          # Escape special characters for sed
-          escaped_links=$(printf '%s\n' "$links" | sed -e 's/[\/&]/\\&/g')
-      
-          # Replace placeholder in file
-          sed -i "s|-PROMOCODES-|${escaped_links}|g" promocodes.html
-      
+          # Replace placeholder in file using awk instead of sed
+          awk -v r="$links" '{gsub(/-PROMOCODES-/,r)}1' promocodes.html > temp.html && mv temp.html promocodes.h
           # Print the result for debugging (optional)
           echo "Resulting HTML:"
           cat promocodes.html
